@@ -71,7 +71,7 @@ public class TechJobs {
     }
 
     // ﻿Returns the key of the selected item from the choices Dictionary
-    private static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
+    public static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
 
         int choiceIdx = -1;
         Boolean validChoice = false;
@@ -118,8 +118,27 @@ public class TechJobs {
     }
 
     // Print a list of jobs
-    private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
+    public static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
+    //Check if there are jobs to print out.
+      if (somejobs.isEmpty()) {
+          System.out.println("No Results");
+          return;
+      }
+      //Iterate over each job and print all its details
+        for (HashMap<String, String> job : someJobs) {
+            System.out.println("*****");
 
-        System.out.println("printJobs is not implemented yet");
+            //Print each job and its details
+            for (String key : job.keySet()) {
+                //looping through each key (job box) and its job details (value)
+                System.out.println(key + ": " + job.get(key));
+            }
+        }
+        System.out.println("*****");
     }
 }
+
+//public static void main(String[] args) {
+//    //Import data from CSV file
+//    ArrayList<HashMap<String, String>> jobdata = job_data.csv.getJobData();
+//}
