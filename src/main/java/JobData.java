@@ -5,15 +5,15 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode
  */
 public class JobData {
+    // Declare jobData and uniqueJobIds as class variables
+    private static ArrayList<HashMap<String, String>> jobData;
+    private static Set<String> uniqueJobIds = new HashSet<>();
 
     public static final String DATA_FILE = "src/main/resources/job_data.csv";
     public static boolean isDataLoaded = false;
@@ -94,8 +94,33 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
+        //Create a list to store unique jobs found
+        ArrayList<HashMap<String, String>> foundJobs = new ArrayList<>();
+
+        // Loop through each job in the data
+        for (HashMap<String, String> job : jobData) {
+            // Loop through each column in the job
+            for (Map.Entry<String, String> entry : job.entrySet()) {
+                // Check if the column value contains the search value
+                if (entry.getValue().toLowerCase().contains(value.toLowerCase())) {
+                    // Check if the job ID is already in the set
+                    if (!uniqueJobIds.contains(job.get("id"))) {
+                        // Add the job to the found jobs list
+                        foundJobs.add(job);
+                        // Add the job ID to the set to mark it as found
+                        uniqueJobIds.add(job.get("id"));
+                    }
+                    // Break out of the loop since a match is found
+                    break;
+                }
+            }
+        }
+
+        // Return the list of found jobs
+        return foundJobs;
+
         // TODO - implement this method
-        return null;
+       // return null;
     }
 
     /**
