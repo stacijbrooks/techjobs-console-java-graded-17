@@ -91,30 +91,33 @@ public class JobData {
      * @param value The search term to look for
      * @return      List of all jobs with at least one field containing the value
      */
+    // Method to find jobs by value
     public static ArrayList<HashMap<String, String>> findByValue(String value) {
-        //JobData.value = value;
+        loadData(); // Load the data first
 
-        // load data, if not already loaded
-        loadData();
+        // Initialize a list to store jobs that contain the specified value
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
-        // Create a list to store unique jobs found
-        ArrayList<HashMap<String, String>> foundJobs = new ArrayList<>();
-
-        // Loop through each job in the data
-        for (HashMap<String, String> job : allJobs) {
-            boolean found = false; // Flag to indicate if the value is found in any column
-            // Loop through each column in the job
-            for (Map.Entry<String, String> entry : job.entrySet()) {
-                // Check if the column value contains the search value (case insensitive)
-                if (entry.getValue().toLowerCase().contains(value.toLowerCase())) {
-                    foundJobs.add(job);
+        // Iterate over each job in allJobs
+        for (HashMap<String, String> row : allJobs) {
+            // Iterate over each column in the current job
+            for (String column : row.keySet()) {
+                //retrieving the value associated with a specific key (column) from a HashMap (row).
+                String val = row.get(column);
+                // If the column value contains the specified value (case-insensitive), add the job to the list and break the loop
+                if (val.toLowerCase().contains(value.toLowerCase())) {
+                    jobs.add(row);
+                    // Found a match, no need to check other columns. Terminates inner loop.
                     break;
                 }
             }
         }
 
-        return foundJobs;
+        // Return the list of all jobs that contain the value
+        return jobs;
     }
+
+
            /* // If the value is found in any column, add the job to the found jobs list
             if (found) {
                 foundJobs.add(job);

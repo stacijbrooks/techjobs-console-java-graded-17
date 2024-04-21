@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class TechJobs {
@@ -134,26 +135,22 @@ public class TechJobs {
         if (someJobs.isEmpty()) {
             System.out.print("No Results");
         } else {
+        }
+        // Iterate over each job
             for (HashMap<String, String> job : someJobs) {
-                String jobTitle = job.get("name");
-                String employer = job.get("employer");
-                String location = job.get("location");
-                String positionType = job.get("position type");
-                String coreCompetency = job.get("core competency");
-
                 System.out.println("\n*****");
-                System.out.println("position type: " + positionType);
-                System.out.println("name: " + jobTitle);
-                System.out.println("employer: " + employer);
-                System.out.println("location: " + location);
-                System.out.println("core competency: " + coreCompetency);
+                // Iterate over each entry in the job
+                for (Map.Entry<String, String> entry : job.entrySet()) {
+                    System.out.println(entry.getKey() + ": " + entry.getValue());
+                }
                 System.out.println("*****");
             }
-
         }
-
     }
-}
+
+
+
+
 
 
 //            someJobs.forEach(job -> {
