@@ -11,14 +11,12 @@ import java.util.*;
  * Created by LaunchCode
  */
 public class JobData {
-    // Declare jobData and uniqueJobIds as class variables
-    private static ArrayList<HashMap<String, String>> jobData;
-    private static Set<String> uniqueJobIds = new HashSet<>();
 
-    public static final String DATA_FILE = "src/main/resources/job_data.csv";
-    public static boolean isDataLoaded = false;
+    private static final String DATA_FILE = "src/main/resources/job_data.csv";
+    private static boolean isDataLoaded = false;
 
-    public static ArrayList<HashMap<String, String>> allJobs;
+    private static ArrayList<HashMap<String, String>> allJobs;
+    //private static String value;
 
     /**
      * Fetch list of all values from loaded data,
@@ -41,7 +39,8 @@ public class JobData {
                 values.add(aValue);
             }
         }
-
+        //BONUS: Sort Alphabetically
+        Collections.sort(values);
         return values;
     }
 
@@ -56,7 +55,6 @@ public class JobData {
     /**
      * Returns results of search the jobs data by key/value, using
      * inclusion of the search term.
-     *
      * For example, searching for employer "Enterprise" will include results
      * with "Enterprise Holdings, Inc".
      *
@@ -75,10 +73,14 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
-                jobs.add(row);
+//            if (aValue.contains(value)) {
+//                jobs.add(row);
+
+            //changed to ignore case sensitivity to enhance search functionality.
+                if (aValue.equalsIgnoreCase(value)) {
+                    jobs.add(row);
+                }
             }
-        }
 
         return jobs;
     }
@@ -90,43 +92,41 @@ public class JobData {
      * @return      List of all jobs with at least one field containing the value
      */
     public static ArrayList<HashMap<String, String>> findByValue(String value) {
+        //JobData.value = value;
 
         // load data, if not already loaded
         loadData();
 
-        //Create a list to store unique jobs found
+        // Create a list to store unique jobs found
         ArrayList<HashMap<String, String>> foundJobs = new ArrayList<>();
 
         // Loop through each job in the data
-        for (HashMap<String, String> job : jobData) {
+        for (HashMap<String, String> job : allJobs) {
+            boolean found = false; // Flag to indicate if the value is found in any column
             // Loop through each column in the job
             for (Map.Entry<String, String> entry : job.entrySet()) {
-                // Check if the column value contains the search value
+                // Check if the column value contains the search value (case insensitive)
                 if (entry.getValue().toLowerCase().contains(value.toLowerCase())) {
-                    // Check if the job ID is already in the set
-                    if (!uniqueJobIds.contains(job.get("id"))) {
-                        // Add the job to the found jobs list
-                        foundJobs.add(job);
-                        // Add the job ID to the set to mark it as found
-                        uniqueJobIds.add(job.get("id"));
-                    }
-                    // Break out of the loop since a match is found
+                    foundJobs.add(job);
                     break;
                 }
             }
         }
 
-        // Return the list of found jobs
         return foundJobs;
-
-        // TODO - implement this method
-       // return null;
     }
+           /* // If the value is found in any column, add the job to the found jobs list
+            if (found) {
+                foundJobs.add(job);
+            }
+        }*/
+
+        // Return the list of found jobs
 
     /**
      * Read in data from a CSV file and store it in a list
      */
-    public static void loadData() {
+    private static void loadData() {
 
         // Only load data once
         if (isDataLoaded) {
@@ -139,7 +139,7 @@ public class JobData {
             Reader in = new FileReader(DATA_FILE);
             CSVParser parser = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
             List<CSVRecord> records = parser.getRecords();
-            Integer numberOfColumns = records.get(0).size();
+            int numberOfColumns = records.get(0).size();
             String[] headers = parser.getHeaderMap().keySet().toArray(new String[numberOfColumns]);
 
             allJobs = new ArrayList<>();
